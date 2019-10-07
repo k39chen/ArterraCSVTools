@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arterra CSV Tools - Promotions Amazer</title>
+
+    <script type="text/javascript" src="../../lib/lodash-1.8.3/lodash-1.8.3.js"></script>
+
+    <script type="text/javascript" src="../../lib/jquery-3.4.1/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="../../lib/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../lib/jquery-ui-1.12.1/jquery-ui.css" />
+
+    <link rel="stylesheet" type="text/css" href="../../lib/font-awesome-4.7.0/css/font-awesome.css" />
+
+    <script type="text/javascript" src="../../common/js/logger.js"></script>
+    <script type="text/javascript" src="../../common/js/csv.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+  </head>
+
+  <body>
+    <div class="page-container">
+
+      <ul class="breadcrumbs">
+        <li class="breadcrumb-item"><a href="../../index.html">Home Page</a></li>
+        <i class="breadcrumb-delim fa fa-angle-right"></i>
+        <li class="breadcrumb-item">Promotions Amazer</li>
+      </ul>
+
+      <div class="title">Promotions Amazer</div>
+
+      <div class="page-content">
+
+        <div class="section" data-id="description">
+          <div class="section-title">Description</div>
+          <div class="section-content">
+            The purpose of the promotion amazer....
+          </div>
+        </div>
+
+        <div class="section" data-id="instructions">
+          <div class="section-title">Instructions</div>
+          <div class="section-content">
+            <ol>
+              <li>Upload a file, e.g. Ontario Promotion Spotfire.csv.</li>
+              <li>Select/remove the potential list of promotion codes.</li>
+              <li>Press "Generate Output" to produce the resulting CSV content codes.</li>
+              <li>When everything is ready, a link will be created.</li>
+              <li>Click on the link to conclude the transformation.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="section" data-id="upload-file">
+          <div class="section-title">Upload File</div>
+          <div class="section-content">
+            <div class="field">
+              <span class="label">File</span>
+              <span id="fileUpload" class="value"></span>
+            </div>
+            <div id="fileStats"></div>
+          </div>
+        </div>
+
+        <div class="section" data-id="promotion-codes" hidden>
+          <div class="section-title">Promotion Codes</div>
+          <div class="section-content">
+            <div id="codes"></div>
+            <button id="generateOutputBtn">Generate Output</button>
+          </div>
+        </div>
+
+        <div class="section" data-id="results" hidden>
+          <div class="section-title">Results</div>
+          <div class="section-content">
+            <div id="downloadStats"></div>
+            <div class="field">
+              <span class="label">Download File</span>
+              <span id="resultsLink" class="value"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </body>
+</html>

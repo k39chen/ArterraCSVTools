@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arterra CSV Tools - Promotions Fixer-Upper</title>
+
+    <script type="text/javascript" src="../../lib/lodash-1.8.3/lodash-1.8.3.js"></script>
+
+    <script type="text/javascript" src="../../lib/jquery-3.4.1/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="../../lib/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../lib/jquery-ui-1.12.1/jquery-ui.css" />
+
+    <link rel="stylesheet" type="text/css" href="../../lib/font-awesome-4.7.0/css/font-awesome.css" />
+
+    <script type="text/javascript" src="../../common/js/logger.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../common/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+  </head>
+
+  <body>
+    <div class="page-container">
+
+      <ul class="breadcrumbs">
+        <li class="breadcrumb-item"><a href="../../index.html">Home Page</a></li>
+        <i class="breadcrumb-delim fa fa-angle-right"></i>
+        <li class="breadcrumb-item">Promotions Fixer-Upper</li>
+      </ul>
+
+      <div class="title">Promotions Fixer-Upper</div>
+
+      <div class="page-content">
+
+        <div class="section" data-id="description">
+          <div class="section-title">Description</div>
+          <div class="section-content">
+            The purpose of the Promotions Fixer-Upper is to transform a spreadsheet...
+          </div>
+        </div>
+
+        <div class="section" data-id="instructions">
+          <div class="section-title">Instructions</div>
+          <div class="section-content">
+            <ol>
+              <li>Enter entire <b>Promotions</b> column. See existing placeholder value for <b>Input</b>.</li>
+              <li>Click <b>Generate Promotion Types</b> to determine which types exist in your input.</li>
+              <li>Click+Drag to sort the <b>Promotion Types</b> based on importance within each row</li>
+              <li>When ready, click <b>Generate Output</b> to use the sorted promotion types to generate the desired output.</li>
+              <li>Finally, copy all of the output text and copy-paste into your Excel spreadsheet with the selection selected.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="section" data-id="input-promotion-types">
+          <div class="section-title">Input Promotion Types</div>
+          <div class="section-content">
+            <textarea id="input">Étalage régulier-1
+Étalage régulier-22,Étalage mini-49, Points_1000.00
+Étalage mini-1,Étalage régulier-1, Points_0.00
+Étalage régulier-2, Points_0.00
+Circulaire-Vedette à rabais mixte-416,Étalage régulier-1, Étalage régulier-1, LTO_1.00, Points_750.00
+Étalage régulier-8,Frigo 1 période-95,Étalage gros-2,Dégustation - régulière-1, Points_1000.00
+Allongeur - régulier-18,Étalage régulier-22,Frigo 1 période-50, Points_1000.00
+Frigo 1 période-50, Points_500.00
+Frigo 1 période-75, Points_500.00
+Étalage mini-224, Étalage mini-224,Circulaire-Standard plus 235 succursales à points bonis-416, LTO_0.00, Points_1500.00
+Étalage régulier-1,Étalage mini-20, Points_3000.00</textarea>
+            <button id="generate-promotion-types-btn">Generate Promotion Types</button>
+          </div>
+        </div>
+
+        <div class="section" data-id="promotion-types" hidden>
+          <div class="section-title">Promotion Types <span id="promotion-types-count"></span></div>
+          <div class="section-content">
+            <div id="promotion-types"></div>
+            <button id="generate-output-btn">Generate Output</button>
+          </div>
+        </div>
+
+        <div class="section" data-id="output" hidden>
+          <div class="section-title">Output</div>
+          <div class="section-content">
+            <textarea id="output"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </body>
+</html>

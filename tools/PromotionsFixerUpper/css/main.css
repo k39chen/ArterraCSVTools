@@ -1,0 +1,32 @@
+#promotion-types {
+  margin-bottom: 1em;
+}
+
+#promotion-types:after {
+  display: block;
+  content: "";
+  clear: both;
+}
+
+.promotion-type {
+  float: left;
+  clear: both;
+  font-size: 12px;
+}
+
+.promotion-type > .ordinal {
+  display: inline-block;
+  font-weight: bold;
+  width: 24px;
+  text-align: center;
+  color: #999;
+}
+
+.promotion-type > .label {
+  display: inline-block;
+  cursor: pointer;
+  padding: 0.25em 0.5em;
+  background: #fafafa;
+  border: solid 1px #d7d7d7;
+  border-radius: 3px;
+}

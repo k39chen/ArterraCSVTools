@@ -1,0 +1,243 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+
+    <style>
+    * { font-family: Arial; font-size: 12px; }
+    html { padding-bottom: 120px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 20px; }
+    textarea { display: block; width: 100%; height: 240px; border: solid 1px #d7d7d7; line-height: 1.5em; padding: 0.25em 0.5em; border-radius: 3px; }
+    textarea#promotions { height: 120px; margin-bottom: 12px; }
+    button { cursor: pointer; margin: 1.0em 0; height: 24px; background: #fafafa; border: solid 1px #d7d7d7; border-radius: 3px; }
+    button:hover { background: #f2f2f2; }
+
+    #promotion-types:after { display: block; content: ""; clear: both; }
+    .promotion-type { float: left; clear: both; font-size: 12px; }
+    .promotion-type > .ordinal { display: inline-block; font-weight: bold; width: 24px; text-align: center; color: #999; }
+    .promotion-type > .label { display: inline-block;  cursor: pointer; padding: 0.25em 0.5em; background: #fafafa; border: solid 1px #d7d7d7; border-radius: 3px; }
+    </style>
+</head>
+
+<body>
+    <h1>Promotion List Fixer-Upper</h1>
+    <ol>
+        <li>Enter entire <b>Promotions</b> column. See existing placeholder value for <b>Input</b>.</li>
+        <li>Click <b>Generate Promotion Types</b> to determine which types exist in your input.</li>
+        <li>Click+Drag to sort the <b>Promotion Types</b> based on importance within each row</li>
+        <li>When ready, click <b>Generate Output</b> to use the sorted promotion types to generate the desired output.</li>
+        <li>Finally, copy all of the output text and copy-paste into your Excel spreadsheet with the selection selected.</li>
+    </ol>
+
+    <h2>Input</h2>
+    <textarea id="input">
+Étalage régulier-1
+Étalage régulier-22,Étalage mini-49, Points_1000.00
+Étalage mini-1,Étalage régulier-1, Points_0.00
+Étalage régulier-2, Points_0.00
+Circulaire-Vedette à rabais mixte-416,Étalage régulier-1, Étalage régulier-1, LTO_1.00, Points_750.00
+Étalage régulier-8,Frigo 1 période-95,Étalage gros-2,Dégustation - régulière-1, Points_1000.00
+Allongeur - régulier-18,Étalage régulier-22,Frigo 1 période-50, Points_1000.00
+Frigo 1 période-50, Points_500.00
+Frigo 1 période-75, Points_500.00
+Étalage mini-224, Étalage mini-224,Circulaire-Standard plus 235 succursales à points bonis-416, LTO_0.00, Points_1500.00
+Étalage régulier-1,Étalage mini-20, Points_3000.00</textarea>
+    <button id="generate-promotion-types-btn">Generate Promotion Types</button>
+
+    <h2>Promotions Types <span id="promotion-types-count"></span></h2>
+    <div id="promotion-types"></div>
+    <button id="generate-output-btn">Generate Output</button>
+
+    <h2>Output</h2>
+    <textarea id="output">Output</textarea>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        var $input = $("textarea#input");
+        var $generatePromotionsBtn = $("button#generate-promotion-types-btn");
+        var $generateOutputBtn = $("button#generate-output-btn");
+
+        var $promotionTypesCount = $("#promotion-types-count");
+        var $promotionTypes = $("#promotion-types");
+
+        $promotionTypes.sortable({
+            items: ".promotion-type",
+            stop: function() {
+                setOrdinals($(this));
+            }
+        });
+        var SUGGESTED_ORDINALS = _.invert([
+            "Circulaire-Majeur à rabais mixte",
+            "Circulaire-Standard Plus 170 succursales à rabais mixte",
+            "Circulaire-Standard plus 120 succursales à rabais mixte",
+            "Circulaire-Standard plus 235 succursales à points bonis",
+            "Circulaire-Standard plus 235 succursales à rabais mixte",
+            "Circulaire-Standard plus 25 succursales à rabais mixte",
+            "Circulaire-Standard plus 315 succursales sans rabais",
+            "Circulaire-Standard plus 315 succursales à rabais mixte",
+            "Circulaire-Standard plus 60 succursales à rabais mixte",
+            "Circulaire-Standard plus 80  succursales sans rabais",
+            "Circulaire-Standard plus 80  succursales à rabais mixte",
+            "Circulaire-Vedette à rabais mixte",
+            "Événement tactique-Forfait Nouveauté",
+            "Événement tactique-Forfait Nouveauté Sélection",
+            "Événement tactique-Produit à découvrir à rabais mixte",
+            "Événement tactique-Standard plus 235 succursales sans rabais",
+            "Événement tactique-Standard plus 235 succursales à points bonis",
+            "Événement tactique-Standard plus 315 succursales sans rabais",
+            "Événement tactique-Standard plus 80  succursales à points bonis",
+            "Forfait offre de lancement",
+            "Vitrine 1 période",
+            "Dégustation - régulière",
+            "Étalage super",
+            "Étalage maxi",
+            "Étalage régulier",
+            "Étalage gros",
+            "Étalage mini longue durée",
+            "Étalage mini",
+            "Allongeur - régulier",
+            "Frigo longue durée",
+            "Frigo 1 période",
+            "LTO",
+            "Points"
+        ]);
+        var getSuggestedPromotionOrdinal = function(promotion) {
+            return SUGGESTED_ORDINALS[promotion] || -1;
+        };
+        var getPromotionType = function(promotion) {
+            var promotionType = $.trim(promotion);
+
+            // we're only interested in getting the unique promotion type
+            // - the regex here removes the trailing number and dash along
+            //   with remaining whitespaces
+            promotionType = promotionType.replace(/(-|_)\s*[0-9,.]+$/, "");
+            promotionType = $.trim(promotionType);
+
+            return promotionType;
+        };
+        var getPromotionSuffix = function(promotion) {
+            var promotionSuffix = $.trim(promotion);
+
+            // we're only interested in getting the unique promotion type
+            // - the regex here removes the trailing number and dash along
+            //   with remaining whitespaces
+            promotionSuffix = promotionSuffix.match(/(-|_)\s*[0-9,.]+$/);
+
+            if (promotionSuffix && promotionSuffix.length > 0) {
+                promotionSuffix = promotionSuffix[0];
+                promotionSuffix = promotionSuffix.replace(/-|_/g, "");
+                promotionSuffix = $.trim(promotionSuffix);
+                return parseFloat(promotionSuffix);
+            }
+            return -1;
+        };
+        var setOrdinals = function($list) {
+            $list.find(".promotion-type").each(function(index) {
+                var $item = $(this);
+                var $ordinal = $item.find("> .ordinal");
+                $ordinal.text(index + 1);
+            });
+        }
+        var generatePromotionTypes = function() {
+            // try and get a list of promotion types
+            var promotionTypes = [];
+
+            // get our active input
+            var rows = $input.val();
+            rows = rows.split("\n");
+
+            // go through each row and try to get the list of promotions (comma-separated)
+            _.each(rows, function(row) {
+                var promotions = row.split(",");
+                promotions = _.each(promotions, function(promotion) {
+                    var promotionType = getPromotionType(promotion);
+                    promotionTypes.push(promotionType);
+                });
+            });
+            // some refining of the promotion types
+            promotionTypes = _.chain(promotionTypes)
+                .uniq()
+                .filter(function(promotion) { return !_.isEmpty(promotion); })
+                .sortBy(function(promotion) { return getSuggestedPromotionOrdinal(promotion) || promotion; })
+                .value();
+
+            // update the promotion types count
+            $promotionTypesCount.text("(" + promotionTypes.length + ")");
+
+            // create the items for our sortable list (make sure its empty first)
+            var itemMarkup = [];
+            _.each(promotionTypes, function(promotionType) {
+                itemMarkup.push("<div class='promotion-type' data-id='" + promotionType + "'><span class='ordinal'>1</span><span class='label'>" + promotionType + "</span></div>");
+            });
+            $promotionTypes.html(itemMarkup.join("\n"));
+
+            setOrdinals($promotionTypes);
+        };
+        var generateOutput = function() {
+            var $output = $("textarea#output");
+            var promotionTypeOrdinals = _.invert($promotionTypes.sortable("toArray", { attribute: "data-id" }));
+            promotionTypeOrdinals = _.mapObject(promotionTypeOrdinals, function(val) { return parseInt(val, 10) });
+
+            var output = [];
+
+            // get our active input
+            var rows = $input.val();
+            rows = rows.split("\n");
+
+            // go through each row and try to get the list of promotions (comma-separated)
+            _.each(rows, function(row) {
+                output.push(generateSortedRow(row, promotionTypeOrdinals));
+            });
+            // set the output content
+            $output.val(output.join("\n"));
+        };
+        var generateSortedRow = function(row, ordinals) {
+            var promotions = row.split(",");
+
+            promotions = _.map(promotions, function(promotion) {
+                return $.trim(promotion);
+            });
+            // group the promotions so that we can deal with duplicate types.
+            // our policy here will be to take the largest numerical suffix
+            var promotionsGroups = _.groupBy(promotions, function(promotion) {
+                return getPromotionType(promotion);
+            });
+            // rebuild our promotions from the groups
+            promotions = [];
+            _.each(promotionsGroups, function(group, type) {
+                // we have a VERY specific case for Points (exclude 0.00)
+                if (_.isEqual(type, "Points")) {
+                    group = _.reject(group, function(promotion) {
+                        return _.isEqual(getPromotionSuffix(promotion), 0);
+                    });
+                }
+                // get the largest promotion in this grouping
+                var largestGroupedPromotion = _.max(group, function(promotion) {
+                    return getPromotionSuffix(promotion);
+                });
+                if (!_.isEqual(largestGroupedPromotion, -Infinity)) {
+                    promotions.push(largestGroupedPromotion);
+                }
+            });
+            // sort the promotions based of promotion type
+            promotions = _.sortBy(promotions, function(promotion) {
+                var promotionType = getPromotionType(promotion);
+                var ordinal = ordinals[promotionType];
+                return ordinal;
+            });
+            return promotions.join(", ");
+        };
+        $generatePromotionsBtn.click(function() {
+            generatePromotionTypes();
+        });
+        $generateOutputBtn.click(function() {
+            generateOutput();
+        });
+    });
+    </script>
+</body>
+
+</html>

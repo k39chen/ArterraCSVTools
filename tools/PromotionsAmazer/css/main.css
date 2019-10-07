@@ -1,0 +1,40 @@
+#codes {
+  overflow: hidden;
+  margin-bottom: 1em;
+	padding-top: 4px;
+	padding-left: 4px;
+	background-color: #fff;
+	border: solid 1px #d7d7d7;
+	box-sizing: border-box;
+}
+.code-item {
+	transition: background-color 0.2s;
+	user-select: none;
+	cursor: pointer;
+    float: left;
+	line-height: 1.25em;
+	padding: 0.25em 0.5em;
+    background-color: #eee;
+    border: solid 1px #d7d7d7;
+    margin-right: 4px;
+    margin-bottom: 4px;
+	box-sizing: border-box;
+}
+.code-item:hover {
+	background-color: #e2e2e2;
+}
+.code-item > .remove-btn {
+	transition: color 0.2s;
+	user-select: none;
+	cursor: pointer;
+	float: left;
+	margin-left: 0.5em;
+	font-weight: bold;
+	color: #999;
+}
+.code-item > .remove-btn:hover {
+	color: #595959;
+}
+.code-item > span {
+	float: left;
+}
